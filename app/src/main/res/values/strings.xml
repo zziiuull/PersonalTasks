@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">PersonalTasks</string>
+    <string name="remove_task">Remove task</string>
+    <string name="edit_task">Edit task</string>
+    <string name="details">Details</string>
+    <string name="add_task">Add task</string>
+</resources>
