@@ -39,12 +39,26 @@
         app:layout_constraintTop_toBottomOf="@id/title_et" />
 
     <Button
-        android:id="@+id/date_picker_actions"
+        android:id="@+id/open_dialog_bt"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Date picker"
+        app:layout_constraintTop_toBottomOf="@id/description_et"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/date_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Pick date"
+        android:layout_marginTop="16dp"
+        android:text="Date"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/description_et"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
         android:id="@+id/save_bt"
@@ -53,6 +67,6 @@
         android:text="Save"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/date_picker_actions" />
+        app:layout_constraintTop_toBottomOf="@id/open_dialog_bt" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
