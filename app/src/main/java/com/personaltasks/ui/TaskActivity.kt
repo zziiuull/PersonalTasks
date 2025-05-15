@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.personaltasks.databinding.ActivityTaskBinding
 import com.personaltasks.model.Constant.EXTRA_TASK
@@ -61,6 +62,8 @@ class TaskActivity : AppCompatActivity() {
                 descriptionEt.setText(it.description)
                 atb.openDialogBt.visibility = View.VISIBLE
                 atb.dateTv.visibility = View.GONE
+                selectedDate = LocalDate.parse(it.dueDate)
+                openDialogBt.text = selectedDate.toString()
 
                 val viewContact = intent.getBooleanExtra(EXTRA_VIEW_TASK, false)
                 if (viewContact) {
@@ -77,19 +80,26 @@ class TaskActivity : AppCompatActivity() {
 
         with(atb) {
             saveBt.setOnClickListener {
-                Task(
-                    receivedTask?.id?:hashCode(),
-                    titleEt.text.toString(),
-                    descriptionEt.text.toString(),
-                    selectedDate.toString()
+                val title = titleEt.text.toString().trim()
+                val description = descriptionEt.text.toString().trim()
+                val date = selectedDate?.toString() ?: receivedTask?.dueDate
 
-                ).let { contact ->
-                    Intent().apply {
-                        putExtra(EXTRA_TASK, contact)
-                        setResult(RESULT_OK, this)
+                if (title.isNotBlank() && description.isNotBlank() && date != null){
+                    Task(
+                        receivedTask?.id ?:hashCode(),
+                        title,
+                        description,
+                        date
+
+                    ).let { contact ->
+                        Intent().apply {
+                            putExtra(EXTRA_TASK, contact)
+                            setResult(RESULT_OK, this)
+                        }
                     }
+                    finish()
                 }
-                finish()
+                else Toast.makeText(this@TaskActivity, "Preencha todos os campos.", Toast.LENGTH_SHORT).show()
             }
         }
     }
