@@ -30,8 +30,11 @@ class TaskRvAdapter(
                     onTaskClickListener.onRemoveTaskMenuItemClick(adapterPosition)
                     true
                 }
+                menu.findItem(R.id.details_mi).setOnMenuItemClickListener {
+                    onTaskClickListener.onTaskClick(adapterPosition)
+                    true
+                }
             }
-            ttb.root.setOnClickListener { onTaskClickListener.onTaskClick(adapterPosition) }
         }
     }
 
@@ -54,9 +57,6 @@ class TaskRvAdapter(
                 titleTv.text = task.title
                 descriptionTv.text = task.description
                 duedateTv.text = task.dueDate
-                holder.itemView.setOnClickListener {
-                    onTaskClickListener.onTaskClick(position)
-                }
             }
         }
     }
