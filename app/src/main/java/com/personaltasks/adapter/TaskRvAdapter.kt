@@ -17,7 +17,7 @@ class TaskRvAdapter(
     inner class TaskViewHolder(ttb: TileTaskBinding): RecyclerView.ViewHolder(ttb.root){
         val titleTv: TextView = ttb.titleTv
         val descriptionTv: TextView = ttb.descriptionTv
-//        val dueDate: TextView = ttb.dueDate
+        val duedateTv: TextView = ttb.duedateTv
 
         init {
             ttb.root.setOnCreateContextMenuListener{ menu, v, menuInfo ->
@@ -53,7 +53,7 @@ class TaskRvAdapter(
             with(holder) {
                 titleTv.text = task.title
                 descriptionTv.text = task.description
-//                .text = task.duedate
+                duedateTv.text = task.dueDate
                 holder.itemView.setOnClickListener {
                     onTaskClickListener.onTaskClick(position)
                 }
