@@ -26,7 +26,7 @@ class TaskActivity : AppCompatActivity() {
         setContentView(atb.root)
 
         setSupportActionBar(atb.toolbarIn.toolbar)
-        supportActionBar?.subtitle = "New contact"
+        supportActionBar?.subtitle = "New Task"
 
         val calendar = Calendar.getInstance()
 
@@ -65,8 +65,8 @@ class TaskActivity : AppCompatActivity() {
                 selectedDate = LocalDate.parse(it.dueDate)
                 openDialogBt.text = selectedDate.toString()
 
-                val viewContact = intent.getBooleanExtra(EXTRA_VIEW_TASK, false)
-                if (viewContact) {
+                val viewTask = intent.getBooleanExtra(EXTRA_VIEW_TASK, false)
+                if (viewTask) {
                     supportActionBar?.subtitle = "View task"
                     titleEt.isEnabled = false
                     descriptionEt.isEnabled = false
@@ -91,9 +91,9 @@ class TaskActivity : AppCompatActivity() {
                         description,
                         date
 
-                    ).let { contact ->
+                    ).let { task ->
                         Intent().apply {
-                            putExtra(EXTRA_TASK, contact)
+                            putExtra(EXTRA_TASK, task)
                             setResult(RESULT_OK, this)
                         }
                     }

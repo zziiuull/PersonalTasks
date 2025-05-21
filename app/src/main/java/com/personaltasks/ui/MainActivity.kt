@@ -48,13 +48,13 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener {
 
         carl = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
-                val contact = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                val task = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     result.data?.getParcelableExtra(EXTRA_TASK, Task::class.java)
                 }
                 else {
                     result.data?.getParcelableExtra<Task>(EXTRA_TASK)
                 }
-                contact?.let{ receivedTask ->
+                task?.let{ receivedTask ->
                     val position = taskList.indexOfFirst { it.id == receivedTask.id }
                     if (position == -1) {
                         taskList.add(receivedTask)
@@ -83,7 +83,7 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when(item.itemId) {
-            R.id.add_contact_mi -> {
+            R.id.add_task_mi -> {
                 carl.launch(Intent(this, TaskActivity::class.java))
                 true
             }
