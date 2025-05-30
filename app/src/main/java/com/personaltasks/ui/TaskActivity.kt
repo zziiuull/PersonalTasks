@@ -58,12 +58,19 @@ class TaskActivity : AppCompatActivity() {
         receivedTask?.let{
             supportActionBar?.subtitle = "Edit task"
             with(atb) {
+                var isDone = false
+                if (it.isDone == "true"){
+                    isDone = true
+                }
                 titleEt.setText(it.title)
                 descriptionEt.setText(it.description)
                 atb.openDialogBt.visibility = View.VISIBLE
                 atb.dateTv.visibility = View.GONE
                 selectedDate = LocalDate.parse(it.dueDate)
                 openDialogBt.text = selectedDate.toString()
+                openDialogBt.visibility = View.VISIBLE
+                cbIsdone.visibility = View.VISIBLE
+                cbIsdone.isChecked = isDone
 
                 val viewTask = intent.getBooleanExtra(EXTRA_VIEW_TASK, false)
                 if (viewTask) {
@@ -74,6 +81,7 @@ class TaskActivity : AppCompatActivity() {
                     atb.dateTv.visibility = View.VISIBLE
                     atb.dateTv.text = it.dueDate
                     saveBt.visibility = View.GONE
+                    cbIsdone.isEnabled = false
                 }
             }
         }
@@ -83,13 +91,18 @@ class TaskActivity : AppCompatActivity() {
                 val title = titleEt.text.toString().trim()
                 val description = descriptionEt.text.toString().trim()
                 val date = selectedDate?.toString() ?: receivedTask?.dueDate
+                val isDone = cbIsdone.isChecked
+                var isDoneStr = "false"
+                if (isDone == true) isDoneStr = "true"
+
 
                 if (title.isNotBlank() && description.isNotBlank() && date != null){
                     Task(
                         receivedTask?.id ?:hashCode(),
                         title,
                         description,
-                        date
+                        date,
+                        isDoneStr
 
                     ).let { task ->
                         Intent().apply {

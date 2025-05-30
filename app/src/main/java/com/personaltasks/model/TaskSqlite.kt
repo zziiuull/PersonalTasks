@@ -17,13 +17,15 @@ class TaskSqlite(context: Context): TaskDAO {
         private val TITLE_COLUMN = "title"
         private val DESCRIPTION_COLUMN = "descriptions"
         private val DUEDATE_COLUMN = "dueDate"
+        private val ISDONE_COLUMN = "isDone"
 
 
         val CREATE_TASK_TABLE_STATEMENT = "CREATE TABLE IF NOT EXISTS ${TASK_TABLE} (" +
                 "${ID_COLUMN} INTEGER NOT NULL PRIMARY KEY," +
                 "${TITLE_COLUMN} TEXT NOT NULL," +
                 "${DESCRIPTION_COLUMN} TEXT NOT NULL," +
-                "${DUEDATE_COLUMN} TEXT NOT NULL );"
+                "${DUEDATE_COLUMN} TEXT NOT NULL," +
+                "${ISDONE_COLUMN} TEXT);"
     }
 
     private val taskDatabase: SQLiteDatabase = context.openOrCreateDatabase(
@@ -94,13 +96,15 @@ class TaskSqlite(context: Context): TaskDAO {
             put(TITLE_COLUMN, title)
             put(DESCRIPTION_COLUMN, description)
             put(DUEDATE_COLUMN, dueDate)
+            put(ISDONE_COLUMN, isDone)
         }
     }
 
-    private fun Cursor.toTask() = Task(
-        getInt(getColumnIndexOrThrow(ID_COLUMN)),
-        getString(getColumnIndexOrThrow(TITLE_COLUMN)),
-        getString(getColumnIndexOrThrow(DESCRIPTION_COLUMN)),
-        getString(getColumnIndexOrThrow(DUEDATE_COLUMN))
-    )
+    private fun Cursor.toTask() =
+        Task(
+            getInt(getColumnIndexOrThrow(ID_COLUMN)),
+            getString(getColumnIndexOrThrow(TITLE_COLUMN)),
+            getString(getColumnIndexOrThrow(DESCRIPTION_COLUMN)),
+            getString(getColumnIndexOrThrow(DUEDATE_COLUMN)),
+            getString(getColumnIndexOrThrow(ISDONE_COLUMN)))
 }

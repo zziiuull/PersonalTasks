@@ -18,6 +18,7 @@ class TaskRvAdapter(
         val titleTv: TextView = ttb.titleTv
         val descriptionTv: TextView = ttb.descriptionTv
         val duedateTv: TextView = ttb.duedateTv
+        val isdoneTv: TextView = ttb.isdoneTv
 
         init {
             ttb.root.setOnCreateContextMenuListener{ menu, v, menuInfo ->
@@ -57,6 +58,7 @@ class TaskRvAdapter(
                 titleTv.text = task.title
                 descriptionTv.text = task.description
                 duedateTv.text = task.dueDate
+                isdoneTv.text = task.isDone
             }
         }
     }
