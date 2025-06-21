@@ -18,6 +18,7 @@ class DeletedTaskRvAdapter(
         val titleTv: TextView = ttb.titleTv
         val descriptionTv: TextView = ttb.descriptionTv
         val duedateTv: TextView = ttb.duedateTv
+        val isDone: TextView = ttb.isdoneTv
 
         init {
             ttb.root.setOnCreateContextMenuListener { menu, v, menuInfo ->
@@ -57,6 +58,7 @@ class DeletedTaskRvAdapter(
                 titleTv.text = task.title
                 descriptionTv.text = task.description
                 duedateTv.text = task.dueDate
+                isDone.text = if (task.isDone) "Done" else "Not done"
             }
         }
     }

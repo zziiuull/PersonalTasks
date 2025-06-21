@@ -17,6 +17,7 @@ class TaskSqlite(context: Context): TaskDAO {
         private val TITLE_COLUMN = "title"
         private val DESCRIPTION_COLUMN = "descriptions"
         private val DUEDATE_COLUMN = "dueDate"
+        private val ISDONE_COLUMN = "isDone"
         private val DELETED_COLUMN = "deleted"
 
 
@@ -25,6 +26,7 @@ class TaskSqlite(context: Context): TaskDAO {
                 "${TITLE_COLUMN} TEXT NOT NULL," +
                 "${DESCRIPTION_COLUMN} TEXT NOT NULL," +
                 "${DUEDATE_COLUMN} TEXT NOT NULL," +
+                "${ISDONE_COLUMN} INTEGER NOT NULL DEFAULT 0," +
                 "${DELETED_COLUMN} INTEGER NOT NULL DEFAULT 0);"
     }
 
@@ -115,6 +117,7 @@ class TaskSqlite(context: Context): TaskDAO {
             put(TITLE_COLUMN, title)
             put(DESCRIPTION_COLUMN, description)
             put(DUEDATE_COLUMN, dueDate)
+            put(ISDONE_COLUMN, if (isDone) 1 else 0)
             put(DELETED_COLUMN, if (deleted) 1 else 0)
         }
     }
@@ -124,6 +127,7 @@ class TaskSqlite(context: Context): TaskDAO {
         getString(getColumnIndexOrThrow(TITLE_COLUMN)),
         getString(getColumnIndexOrThrow(DESCRIPTION_COLUMN)),
         getString(getColumnIndexOrThrow(DUEDATE_COLUMN)),
+        getInt(getColumnIndexOrThrow(ISDONE_COLUMN)) == 1,
         getInt(getColumnIndexOrThrow(DELETED_COLUMN)) == 1
     )
 }
