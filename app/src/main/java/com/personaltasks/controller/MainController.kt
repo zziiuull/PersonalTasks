@@ -1,43 +1,42 @@
 package com.personaltasks.controller
 
-import androidx.room.Room
+import android.os.Message
+import com.personaltasks.model.Constant.EXTRA_TASK_ARRAY
 import com.personaltasks.model.Task
 import com.personaltasks.model.TaskDAO
-import com.personaltasks.model.TaskRoomDb
+import com.personaltasks.model.TaskFirebaseDatabase
 import com.personaltasks.ui.MainActivity
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
-class MainController(mainActivity: MainActivity) {
-    private val taskDAO: TaskDAO = Room.databaseBuilder(
-        mainActivity,
-        TaskRoomDb::class.java,
-        "task-database"
-    ).build().taskDAO()
+class MainController(private val mainActivity: MainActivity) {
+    private val taskDAO: TaskDAO = TaskFirebaseDatabase()
+    private val databaseCoroutineScope = CoroutineScope(Dispatchers.IO)
 
+    fun retrieveActiveTasks() = taskDAO.retrieveTasks().filter { !it.deleted }
     fun insertTask(task: Task) {
-        MainScope().launch {
-            withContext(Dispatchers.IO){
-                taskDAO.createTask(task)
-            }
+        databaseCoroutineScope.launch {
+            taskDAO.createTask(task)
         }
     }
-    fun getTask(id: Int) = taskDAO.retrieveTask(id)
-    fun getTasks() = taskDAO.retrieveTasks()
+    fun getTasks(){
+        databaseCoroutineScope.launch {
+            val taskList = retrieveActiveTasks()
+            mainActivity.getTasksHandler.sendMessage(Message().apply {
+                data.putParcelableArray(EXTRA_TASK_ARRAY, taskList.toTypedArray())
+            })
+        }
+    }
+
     fun modifyTask(task: Task) {
-        MainScope().launch {
-            withContext(Dispatchers.IO){
-                taskDAO.updateTask(task)
-            }
+        databaseCoroutineScope.launch {
+            taskDAO.updateTask(task)
         }
     }
     fun removeTask(task: Task) {
-        MainScope().launch {
-            withContext(Dispatchers.IO){
-                taskDAO.deleteTask(task)
-            }
+        databaseCoroutineScope.launch {
+            taskDAO.deleteTask(task)
         }
     }
 }
