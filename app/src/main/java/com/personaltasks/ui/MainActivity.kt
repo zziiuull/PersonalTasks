@@ -3,6 +3,9 @@ package com.personaltasks.ui
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.os.Message
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -10,17 +13,16 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.personaltasks.R
 import com.personaltasks.adapter.TaskRvAdapter
 import com.personaltasks.controller.MainController
 import com.personaltasks.databinding.ActivityMainBinding
 import com.personaltasks.model.Constant.EXTRA_TASK
+import com.personaltasks.model.Constant.EXTRA_TASK_ARRAY
 import com.personaltasks.model.Constant.EXTRA_VIEW_TASK
 import com.personaltasks.model.Task
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity(), OnTaskClickListener {
     private val amb: ActivityMainBinding by lazy {
@@ -37,6 +39,33 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener {
 
     private val mainController: MainController by lazy {
         MainController(this)
+    }
+
+    companion object {
+        const val GET_TASKS_MESSAGE = 1
+        const val GET_CONTACTS_INTERVAL = 2000L
+    }
+
+    val getTasksHandler = object: Handler(Looper.getMainLooper()){
+        override fun handleMessage(msg: Message) {
+            super.handleMessage(msg)
+            if (msg.what == GET_TASKS_MESSAGE){
+                mainController.getTasks()
+                sendMessageDelayed(obtainMessage().apply { what = GET_TASKS_MESSAGE }, GET_CONTACTS_INTERVAL)
+
+            }
+            else {
+                val contactArray = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    msg.data?.getParcelableArray(EXTRA_TASK_ARRAY, Task::class.java)
+                }
+                else {
+                    msg.data?.getParcelableArray(EXTRA_TASK_ARRAY)
+                }
+                taskList.clear()
+                contactArray?.forEach { taskList.add(it as Task) }
+                taskAdapter.notifyDataSetChanged()
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,7 +102,11 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener {
         amb.taskRv.adapter = taskAdapter
         amb.taskRv.layoutManager = LinearLayoutManager(this)
 
-        fillTaskList()
+        getTasksHandler.sendMessageDelayed(
+            Message().apply {
+                what = GET_TASKS_MESSAGE
+            },
+            GET_CONTACTS_INTERVAL)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -85,6 +118,15 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener {
         return when(item.itemId) {
             R.id.add_task_mi -> {
                 carl.launch(Intent(this, TaskActivity::class.java))
+                true
+            }
+            R.id.restore_task_mi -> {
+                startActivity(Intent(this, DeletedTaskActivity::class.java))
+                true
+            }
+            R.id.logout_mi -> {
+                Firebase.auth.signOut()
+                finish()
                 true
             }
             else -> { false }
@@ -117,16 +159,10 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener {
         }
     }
 
-    private fun fillTaskList(){
-        taskList.clear()
-
-        MainScope().launch {
-            val tasks = withContext(Dispatchers.IO) {
-                mainController.getTasks()
-            }
-
-            taskList.addAll(tasks)
-            taskAdapter.notifyDataSetChanged()
+    override fun onStart() {
+        super.onStart()
+        if (Firebase.auth.currentUser == null){
+            finish()
         }
     }
 }
