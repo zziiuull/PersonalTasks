@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/context_restore_task_mi"
+        android:title="Restore task" />
+
+    <item
+        android:id="@+id/details_mi"
+        android:title="@string/details" />
+</menu>
