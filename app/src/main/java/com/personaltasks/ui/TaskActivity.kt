@@ -86,11 +86,10 @@ class TaskActivity : AppCompatActivity() {
 
                 if (title.isNotBlank() && description.isNotBlank() && date != null){
                     Task(
-                        receivedTask?.id ?:hashCode(),
+                        receivedTask?.id?:hashCode(),
                         title,
                         description,
                         date
-
                     ).let { task ->
                         Intent().apply {
                             putExtra(EXTRA_TASK, task)
