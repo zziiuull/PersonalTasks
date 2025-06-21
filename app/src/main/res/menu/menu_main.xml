@@ -2,8 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/restore_task_mi"
+        android:title="Restore task"
+        android:icon="@drawable/icons8_lixo"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/add_task_mi"
         android:title="@string/add_task"
         android:icon="@drawable/ic_add"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/logout_mi"
+        android:title="Logout"
+        android:icon="@drawable/session_leave_svgrepo_com"
         app:showAsAction="always" />
 </menu>
