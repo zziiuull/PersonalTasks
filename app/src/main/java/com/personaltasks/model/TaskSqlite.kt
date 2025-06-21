@@ -17,13 +17,15 @@ class TaskSqlite(context: Context): TaskDAO {
         private val TITLE_COLUMN = "title"
         private val DESCRIPTION_COLUMN = "descriptions"
         private val DUEDATE_COLUMN = "dueDate"
+        private val DELETED_COLUMN = "deleted"
 
 
         val CREATE_TASK_TABLE_STATEMENT = "CREATE TABLE IF NOT EXISTS ${TASK_TABLE} (" +
                 "${ID_COLUMN} INTEGER NOT NULL PRIMARY KEY," +
                 "${TITLE_COLUMN} TEXT NOT NULL," +
                 "${DESCRIPTION_COLUMN} TEXT NOT NULL," +
-                "${DUEDATE_COLUMN} TEXT NOT NULL );"
+                "${DUEDATE_COLUMN} TEXT NOT NULL," +
+                "${DELETED_COLUMN} INTEGER NOT NULL DEFAULT 0);"
     }
 
     private val taskDatabase: SQLiteDatabase = context.openOrCreateDatabase(
@@ -66,7 +68,18 @@ class TaskSqlite(context: Context): TaskDAO {
 
     override fun retrieveTasks(): MutableList<Task> {
         val taskList: MutableList<Task> = mutableListOf()
-        val cursor = taskDatabase.rawQuery("SELECT * FROM $TASK_TABLE", null)
+        val cursor = taskDatabase.rawQuery("SELECT * FROM $TASK_TABLE WHERE $DELETED_COLUMN = 0", null)
+
+        while (cursor.moveToNext()){
+            taskList.add(cursor.toTask())
+        }
+
+        return taskList
+    }
+
+    fun retrieveDeletedTasks(): MutableList<Task> {
+        val taskList: MutableList<Task> = mutableListOf()
+        val cursor = taskDatabase.rawQuery("SELECT * FROM $TASK_TABLE WHERE $DELETED_COLUMN = 1", null)
 
         while (cursor.moveToNext()){
             taskList.add(cursor.toTask())
@@ -82,8 +95,16 @@ class TaskSqlite(context: Context): TaskDAO {
         arrayOf(task.id.toString())
     )
 
-    override fun deleteTask(task: Task) = taskDatabase.delete(
+    override fun deleteTask(task: Task) = taskDatabase.update(
         TASK_TABLE,
+        ContentValues().apply { put(DELETED_COLUMN, 1) },
+        "$ID_COLUMN = ?",
+        arrayOf(task.id.toString())
+    )
+
+    fun restoreTask(task: Task) = taskDatabase.update(
+        TASK_TABLE,
+        ContentValues().apply { put(DELETED_COLUMN, 0) },
         "$ID_COLUMN = ?",
         arrayOf(task.id.toString())
     )
@@ -94,6 +115,7 @@ class TaskSqlite(context: Context): TaskDAO {
             put(TITLE_COLUMN, title)
             put(DESCRIPTION_COLUMN, description)
             put(DUEDATE_COLUMN, dueDate)
+            put(DELETED_COLUMN, if (deleted) 1 else 0)
         }
     }
 
@@ -101,6 +123,7 @@ class TaskSqlite(context: Context): TaskDAO {
         getInt(getColumnIndexOrThrow(ID_COLUMN)),
         getString(getColumnIndexOrThrow(TITLE_COLUMN)),
         getString(getColumnIndexOrThrow(DESCRIPTION_COLUMN)),
-        getString(getColumnIndexOrThrow(DUEDATE_COLUMN))
+        getString(getColumnIndexOrThrow(DUEDATE_COLUMN)),
+        getInt(getColumnIndexOrThrow(DELETED_COLUMN)) == 1
     )
 }
