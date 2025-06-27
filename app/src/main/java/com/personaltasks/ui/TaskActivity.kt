@@ -49,6 +49,8 @@ class TaskActivity : AppCompatActivity() {
             datePickerDialog.show()
         }
 
+//        atb.prioritySpn.
+
         val receivedTask = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getParcelableExtra(EXTRA_TASK, Task::class.java)
         }
@@ -67,6 +69,7 @@ class TaskActivity : AppCompatActivity() {
                 openDialogBt.visibility = View.VISIBLE
                 cbIsdone.visibility = View.VISIBLE
                 cbIsdone.isChecked = it.isDone
+                priorityEt.setText(it.priority.toString())
 
                 val viewTask = intent.getBooleanExtra(EXTRA_VIEW_TASK, false)
                 if (viewTask) {
@@ -78,6 +81,7 @@ class TaskActivity : AppCompatActivity() {
                     atb.dateTv.text = it.dueDate
                     saveBt.visibility = View.GONE
                     cbIsdone.isEnabled = false
+                    priorityEt.isEnabled = false
                 }
             }
         }
@@ -88,6 +92,16 @@ class TaskActivity : AppCompatActivity() {
                 val description = descriptionEt.text.toString().trim()
                 val date = selectedDate?.toString() ?: receivedTask?.dueDate
                 val isDone = cbIsdone.isChecked
+                val priority = priorityEt.text.toString().toInt()
+
+                if (priority < 0 || priority > 3) {
+                    Toast.makeText(
+                        this@TaskActivity,
+                        "Prioridade inválida. Prioridades vão de 1 a 3",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                }
 
                 if (title.isNotBlank() && description.isNotBlank() && date != null){
                     Task(
@@ -96,6 +110,8 @@ class TaskActivity : AppCompatActivity() {
                         description,
                         date,
                         isDone,
+                        false,
+                        priority
                     ).let { task ->
                         Intent().apply {
                             putExtra(EXTRA_TASK, task)

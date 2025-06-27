@@ -15,5 +15,6 @@ data class Task(
     var description: String = "",
     var dueDate: String? = "",
     var isDone: Boolean = false,
-    var deleted: Boolean = false
+    var deleted: Boolean = false,
+    var priority: Int = 1
 ): Parcelable

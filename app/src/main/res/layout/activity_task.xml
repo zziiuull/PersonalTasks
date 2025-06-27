@@ -38,12 +38,31 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title_et" />
 
+    <EditText
+        android:id="@+id/priority_et"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Task priority"
+        android:inputType="number"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/description_et" />
+
+    <Spinner
+        android:id="@+id/priority_spn"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toBottomOf="@id/save_bt">
+
+    </Spinner>
+
     <Button
         android:id="@+id/open_dialog_bt"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Date picker"
-        app:layout_constraintTop_toBottomOf="@id/description_et"
+        app:layout_constraintTop_toBottomOf="@id/priority_et"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

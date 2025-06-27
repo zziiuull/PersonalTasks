@@ -30,4 +30,10 @@
         android:layout_height="wrap_content"
         android:text="Is done" />
 
+    <TextView
+        android:id="@+id/priority_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Priority" />
+
 </LinearLayout>
